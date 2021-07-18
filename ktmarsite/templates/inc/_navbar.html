@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="{% static 'news/css/style.css' %}">
+    <meta charset="UTF-8">
+        <style type="text/css">
+           a {text-decoration: none;}
+           a:hover {text-decoration: none;}
+           ul.daun li:hover {text-decoration: underline;
+           }
+     </style>
+
+</head>
+<body>
+<header class="p-3 bg-dark text-white">
+    <div class="container-fluid">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="{% url 'home' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="currentColor" class="bi bi-bank"
+                     viewBox="0 0 16 16">
+                    <path d="M8 .95 14.61 4h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.379l.5 2A.5.5 0 0 1 15.5 17H.5a.5.5 0 0 1-.485-.621l.5-2A.5.5 0 0 1 1 14V7H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 4h.89L8 .95zM3.776 4h8.447L8 2.05 3.776 4zM2 7v7h1V7H2zm2 0v7h2.5V7H4zm3.5 0v7h1V7h-1zm2 0v7H12V7H9.5zM13 7v7h1V7h-1zm2-1V5H1v1h14zm-.39 9H1.39l-.25 1h13.72l-.25-1z"/>
+                </svg>
+            </a>
+
+            <ul class="daun nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="{% url 'home' %}" class="nav-link px-4 text-secondary"><h5>Crypto-news</h5></a></li>
+                <li><a href="{% url 'addpage' %}" class="nav-link px-2 text-white">Add News</a></li>
+                <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">FAQs</a></li>
+                <li><a href="{% url 'contact' %}" class="nav-link px-2 text-white">Contact</a></li>
+                <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">About Us</a></li>
+            </ul>
+
+<!--            <form method="get" class="col-12 col-lg-auto mb-3 mb-lg-2 me-lg-3">-->
+<!--                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" name="search">-->
+<!--            </form>-->
+
+            <div class="text-end">
+                {% if request.user.is_authenticated %}
+                <h5> Hello, {{ user.username }}  <a href="{% url 'logout' %}"> <button type="button" class="btn btn-outline-light me-2">Logout</button></a></h5>
+                {% else %}
+                <a href="{% url 'login' %}"
+                <button type="button" class="btn btn-outline-success me-2 mb-lg-2">Login</button>
+                </a>
+                <a  href="{% url 'register' %}"
+                <button type="button" class="btn btn-outline-light me-2 mb-lg-2">Sign</button>
+                </a>
+
+                <a href= "/accounts/google/login/?process=login"
+                <button type="button" class="btn btn-outline-success me-2 mb-lg-2">Google</button>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card mb-3">
+    <div class="card-header">
+        Категория: <a href="{{ news_item.cat.get_absolute_url }}">{{ post.cat }}</a>
+    </div>
+    <div class="card-body">
+
+        <div class="media">
+
+            {% if post.photo %}
+            <img src="{{ post.photo.url }}" alt="" class="mr-3" width="400" height="300" align="left" hspace="10">
+            {% else %}
+            <img src="https://picsum.photos/300/200?grayscale" alt="" class="mr-3" width="400" height="300" align="left"
+                 hspace="10">
+            {% endif %}
+
+            <div class="media-body">
+                <h1 class="card-title">{{ post.title }}</h1>
+                <p class="card-text">{{ post.content|linebreaks }}</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer text-muted">
+        {{ post.time_updated|timesince }} с момента публикации
+    </div>
+</div>
+{% endblock %}

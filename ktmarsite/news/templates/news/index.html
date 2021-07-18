@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+{% for item in posts %}
+<div class="card mb-3">
+
+    <div class="card-header">
+
+        Категория: <a href="{{ item.cat.get_absolute_url }}">{{ item.cat }}</a>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            {% if item.photo %}
+            <p><a href="{{ item.get_absolute_url }}"> <img src="{{ item.photo.url }}" alt="" class="mr-3" width="500"
+                                                           height="400" align="left" hspace="10"
+                                                           draggable="true" title='{{ item.title }}'/></a>
+                {% else %}
+            <p><a href="{{ item.get_absolute_url }}"> <img src="https://picsum.photos/400/300?grayscale" width="500"
+                                                           height="400" alt="" class="mr-3" align="left"
+                                                           hspace="10" title='{{ item.title }}'/></a>
+                {% endif %}
+            <div class="media-body">
+                <h1 class="card-title">{{ item.title }}</h1>
+                <p class="card-text" style="min-height:250px;">{{ item.content|truncatewords:100 }}</p>
+
+                <hr>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ item.get_absolute_url }}" class="btn btn-success"><i
+                            class="bi bi-chat-text-fill"></i> Read more...</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer text-muted">
+        {{ item.time_updated |timesince }} с момента публикации
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

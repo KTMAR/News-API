@@ -1,0 +1,97 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'news/css/style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'news/images/favicon.ico' %}"/>
+
+    <title>{% block title %}
+        {{ title }}
+        {% endblock %}</title>
+</head>
+<body>
+
+{% include 'inc/_navbar.html' %}
+
+
+{% include 'inc/_sidebar.html' %}
+
+
+<td valign="top" class="content">
+
+    <!-- Блок контента -->
+    <div class="content-text">
+        {% block content %}
+        {% endblock %}
+
+        <!-- Конец блока контента -->
+
+
+        {% if page_obj.has_other_pages %}
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1"
+                               aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %}
+
+
+                        {% for p in paginator.page_range %}
+                        {% if page_obj.number == p %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="{{ p }}">{{ p }}</a>
+                            {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ p }}" tabindex="-1" aria-disabled="true">{{ p }}</a>
+                        </li>
+
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" tabindex="-1"
+                                   aria-disabled="true">Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </ul>
+                </nav>
+                </ul>
+            </nav>
+                {% endif %}
+    </div>
+
+
+</td>
+</tr></table>
+</td></tr>
+<!-- Footer -->
+<tr>
+    <td valign=top>
+        <div id="footer">
+            <p>KTMAR Corp &copy; 2021 Частичное или полное копирование информации с данного сайта для распространения на
+                других ресурсах, в том числе и бумажных, строго запрещено.</p>
+        </div>
+    </td>
+</tr>
+</table>
+<!-- Конец footer'а и страницы -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
