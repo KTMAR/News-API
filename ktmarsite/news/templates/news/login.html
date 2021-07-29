@@ -12,8 +12,16 @@
     <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
 
-    <button type="submit">Войти</button>
+    <button class="btn btn-primary" type="submit">Войти</button>
 </form>
+<br>
+Авторизоваться с помощью :
+<a href= "/accounts/google/login/?process=login"
+<button type="button" class="btn btn-secondary">Google+</button>
+</a>
 
+<a href="{% url "social:begin" "github" %}"
+<button type="button" class="btn btn-success">Github+</button>
+</a>
 
 {% endblock %}

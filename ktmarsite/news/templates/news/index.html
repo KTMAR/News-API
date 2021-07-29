@@ -23,8 +23,8 @@
                                                            hspace="10" title='{{ item.title }}'/></a>
                 {% endif %}
             <div class="media-body">
-                <h1 class="card-title">{{ item.title }}</h1>
-                <p class="card-text" style="min-height:250px;">{{ item.content|truncatewords:100 }}</p>
+              <h1 class="display-1"><strong>{{ item.title|truncatewords:10 }}</strong></h1>
+            <p class="card-text" style="min-height:250px;"><em>{{ item.content|truncatewords:140 }}</em></p>
 
                 <hr>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -37,7 +37,7 @@
 
     </div>
     <div class="card-footer text-muted">
-        {{ item.time_updated |timesince }} с момента публикации
+        {{ item.time_updated |timesince }} с момента публикации by {{ item.owner_name }}
     </div>
 </div>
 {% endfor %}

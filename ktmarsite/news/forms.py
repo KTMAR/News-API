@@ -1,10 +1,13 @@
 import re
+from urllib import request
+
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from captcha.fields import CaptchaField
+from form import form
 
 from .models import *
 
@@ -16,7 +19,8 @@ class AddForms(forms.ModelForm):
 
     class Meta:
         model = News
-        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
+        exclude = ('owner_name',)
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'owner_name']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={
@@ -26,7 +30,8 @@ class AddForms(forms.ModelForm):
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
             'cat': forms.Select(attrs={
                 'class': 'form-select',
-            })
+
+            }),
         }
 
     def clean_title(self):
@@ -35,12 +40,15 @@ class AddForms(forms.ModelForm):
             raise ValidationError('Название должно начинаться с букв')
         return title
 
+    captcha = CaptchaField()
+
 
 class RegisterUser(UserCreationForm):
-    username = forms.CharField(label='Login', widget = forms.TextInput(attrs={'class': 'form-input'}))
-    password1 = forms.CharField(label='Password', widget =  forms.PasswordInput(attrs={'class': 'form-input'}))
-    password2 = forms.CharField(label='Password repeat', widget =  forms.PasswordInput(attrs={'class': 'form-input'}))
-    email = forms.EmailField(label='Email', widget =  forms.EmailInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    password2 = forms.CharField(label='Password repeat', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    captcha = CaptchaField()
 
     class Meta:
         model = User

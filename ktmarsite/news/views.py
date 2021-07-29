@@ -1,18 +1,21 @@
 from django.contrib.auth import logout, login
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
+from django.db.models import Case, When, Avg
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseNotFound, Http404, request
+from django.http import HttpResponse, HttpResponseNotFound
 from django.urls import reverse_lazy
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import *
 from .forms import *
 from django.views.generic import ListView, DetailView, CreateView, FormView
 
-from .serializer import NewsSerializer
+from .permissions import IsOwnerOrStaffOrReadOnly
+from .serializer import NewsSerializer, UserNewsRelationSerializer
 from .utils import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -22,8 +25,6 @@ class HomeNews(DataMixin, ListView):
     context_object_name = 'posts'
     template_name = 'news/index.html'
 
-
-
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(HomeNews, self).get_context_data(**kwargs)
         c_def = self.get_user_context(title='Главная страница')
@@ -31,7 +32,6 @@ class HomeNews(DataMixin, ListView):
 
     def get_queryset(self):
         return News.objects.filter(is_published=True).select_related('cat')
-
 
 
 class NewsByCategories(DataMixin, ListView):
@@ -74,6 +74,11 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Добавление новости')
         return dict(list(context.items()) + list(c_def.items()))
+
+        # if form.is_valid():
+        #     news_item = form.save(commit=False)
+        #     news_item.user = request.user  # User posting the form
+        #     news_item.save()
 
 
 class RegisterUser(DataMixin, CreateView):
@@ -133,10 +138,10 @@ class ContactFormView(DataMixin, FormView):
 #         return context
 
 
-def base_view(request):
-    comments = News.objects.get(pk=1).comments.all()
-    result = create_comments_tree(comments)
-    return render(request, 'news/comments.html', {'comments': result})
+# def base_view(request):
+#     comments = News.objects.get(pk=1).comments.all()
+#     result = create_comments_tree(comments)
+#     return render(request, 'news/comments.html', {'comments': result})
 
 
 def logout_user(request):
@@ -145,16 +150,18 @@ def logout_user(request):
 
 
 def about(request):
-
     return render(request, 'news/about.html', {'title': 'О сайте'})
 
 
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
+
 #
 def contact(request):
     return HttpResponse("Обратная связь")
+
+
 #
 #
 # def login(request):
@@ -202,7 +209,6 @@ def contact(request):
 #     return render(request, 'news/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
 
 
-
 # def index(request):
 #     posts = News.objects.all()
 #
@@ -216,9 +222,30 @@ def contact(request):
 
 
 class NewsViewSet(ModelViewSet):
-    queryset = News.objects.all()
+    queryset = News.objects.all().annotate(
+        annotate_likes=Count(Case(When(usernewsrelation__like=True, then=1)))
+    ).select_related('owner_name').prefetch_related('readers').order_by('id')
     serializer_class = NewsSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filter_fields = ['title']
-    search_fields = ['title', 'content']
-    ordering_fields = ['title', 'cat']
+    permission_classes = [IsOwnerOrStaffOrReadOnly]
+    filter_fields = ['title', 'cat__title']
+    search_fields = ['title', 'content', 'cat__title']
+    ordering_fields = ['title', 'cat__title']
+
+    def perform_create(self, serializer):
+        serializer.validated_data['owner_name'] = self.request.user
+        serializer.save()
+
+
+class UserNewsRelationView(UpdateModelMixin, GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserNewsRelation.objects.all()
+    serializer_class = UserNewsRelationSerializer
+    lookup_field = 'news'
+
+    """"Возвращает или создает объект отношения юзера с новостью(лайк,рейтинг и тд.)"""
+
+    def get_object(self):
+        obj, _ = UserNewsRelation.objects.get_or_create(user=self.request.user, news_id=self.kwargs['news'])
+
+        return obj

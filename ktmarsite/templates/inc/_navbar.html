@@ -7,12 +7,13 @@
           integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="{% static 'news/css/style.css' %}">
     <meta charset="UTF-8">
-        <style type="text/css">
+    <style type="text/css">
            a {text-decoration: none;}
            a:hover {text-decoration: none;}
            ul.daun li:hover {text-decoration: underline;
            }
-     </style>
+
+    </style>
 
 </head>
 <body>
@@ -27,30 +28,28 @@
             </a>
 
             <ul class="daun nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="{% url 'home' %}" class="nav-link px-4 text-secondary"><h5>Crypto-news</h5></a></li>
+                <li><a href="{% url 'home' %}" class="nav-link px-4 text-secondary"><h5>KTMAR-news</h5></a></li>
                 <li><a href="{% url 'addpage' %}" class="nav-link px-2 text-white">Add News</a></li>
-                <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">FAQs</a></li>
+                <li><a href="{% url 'home' %}" class="nav-link px-2 text-white">FAQs</a></li>
                 <li><a href="{% url 'contact' %}" class="nav-link px-2 text-white">Contact</a></li>
                 <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">About Us</a></li>
             </ul>
 
-<!--            <form method="get" class="col-12 col-lg-auto mb-3 mb-lg-2 me-lg-3">-->
-<!--                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" name="search">-->
-<!--            </form>-->
+            <!--            <form method="get" class="col-12 col-lg-auto mb-3 mb-lg-2 me-lg-3">-->
+            <!--                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search" name="search">-->
+            <!--            </form>-->
 
             <div class="text-end">
                 {% if request.user.is_authenticated %}
-                <h5> Hello, {{ user.username }}  <a href="{% url 'logout' %}"> <button type="button" class="btn btn-outline-light me-2">Logout</button></a></h5>
+                <h5> Hello, {{ user.username }} <a href="{% url 'logout' %}">
+                    <button type="button" class="btn btn-outline-light me-2">Logout</button>
+                </a></h5>
                 {% else %}
                 <a href="{% url 'login' %}"
                 <button type="button" class="btn btn-outline-success me-2 mb-lg-2">Login</button>
                 </a>
-                <a  href="{% url 'register' %}"
+                <a href="{% url 'register' %}"
                 <button type="button" class="btn btn-outline-light me-2 mb-lg-2">Sign</button>
-                </a>
-
-                <a href= "/accounts/google/login/?process=login"
-                <button type="button" class="btn btn-outline-success me-2 mb-lg-2">Google</button>
                 </a>
                 {% endif %}
             </div>
